@@ -96,7 +96,7 @@ namespace Everyone
                         MutableJSONArray json = MutableJSONArray.Create()
                             .Add(propertyValue);
 
-                        Result<JSONObject> getResult = json.GetObject(0);
+                        Result<MutableJSONObject> getResult = json.GetObject(0);
                         test.AssertSame(propertyValue, getResult.Await());
                     });
 
@@ -106,9 +106,9 @@ namespace Everyone
                         MutableJSONArray json = MutableJSONArray.Create()
                             .Add(propertyValue);
 
-                        Result<JSONObject> getResult = json.GetObject(0);
+                        Result<MutableJSONObject> getResult = json.GetObject(0);
                         test.AssertThrows(() => getResult.Await(),
-                            new InvalidCastException($"Unable to cast object of type '{Types.GetFullName<JSONBooleanValue>()}' to type '{Types.GetFullName<JSONObject>()}'."));
+                            new InvalidCastException($"Unable to cast object of type '{Types.GetFullName<JSONBooleanValue>()}' to type '{Types.GetFullName<MutableJSONObject>()}'."));
                     });
                 });
 
@@ -120,7 +120,7 @@ namespace Everyone
                         MutableJSONArray json = MutableJSONArray.Create()
                             .Add(propertyValue);
 
-                        Result<JSONObject?> getResult = json.GetAsObject(0);
+                        Result<MutableJSONObject?> getResult = json.GetAsObject(0);
                         test.AssertSame(propertyValue, getResult.Await());
                     });
 
@@ -130,7 +130,54 @@ namespace Everyone
                         MutableJSONArray json = MutableJSONArray.Create()
                             .Add(propertyValue);
 
-                        Result<JSONObject?> getResult = json.GetAsObject(0);
+                        Result<MutableJSONObject?> getResult = json.GetAsObject(0);
+                        test.AssertNull(getResult.Await());
+                    });
+                });
+
+                runner.TestMethod("GetArray(int)", () =>
+                {
+                    runner.Test("with existing index and matching value type", (Test test) =>
+                    {
+                        MutableJSONArray propertyValue = JSONArray.Create();
+                        MutableJSONArray json = MutableJSONArray.Create()
+                            .Add(propertyValue);
+
+                        Result<MutableJSONArray> getResult = json.GetArray(0);
+                        test.AssertSame(propertyValue, getResult.Await());
+                    });
+
+                    runner.Test("with existing index and non-matching value type", (Test test) =>
+                    {
+                        JSONBooleanValue propertyValue = JSONBooleanValue.True;
+                        MutableJSONArray json = MutableJSONArray.Create()
+                            .Add(propertyValue);
+
+                        Result<MutableJSONArray> getResult = json.GetArray(0);
+                        test.AssertThrows(() => getResult.Await(),
+                            new InvalidCastException($"Unable to cast object of type '{Types.GetFullName<JSONBooleanValue>()}' to type '{Types.GetFullName<MutableJSONArray>()}'."));
+                    });
+                });
+
+                runner.TestMethod("GetAsArray(int)", () =>
+                {
+                    runner.Test("with existing index and matching value type", (Test test) =>
+                    {
+                        MutableJSONArray propertyValue = JSONArray.Create();
+                        MutableJSONArray json = MutableJSONArray.Create()
+                            .Add(propertyValue);
+
+                        Result<MutableJSONArray?> getResult = json.GetAsArray(0);
+                        test.AssertSame(propertyValue, getResult.Await());
+                    });
+
+                    runner.Test("with existing index and non-matching value type", (Test test) =>
+                    {
+                        JSONBooleanValue propertyValue = JSONBooleanValue.True;
+                        MutableJSONArray json = MutableJSONArray.Create()
+                            .Add(propertyValue);
+
+                        Result<MutableJSONArray?> getResult = json.GetAsArray(0);
                         test.AssertNull(getResult.Await());
                     });
                 });
@@ -370,8 +417,111 @@ namespace Everyone
 
                         MutableJSONArray setResult = json.SetNull(0);
                         test.AssertSame(json, setResult);
-                        test.AssertEqual(JSONNull.Null, json.GetNull(0).Await());
+                        test.AssertEqual(JSONNull.Create(), json.GetNull(0).Await());
                     });
+                });
+
+                runner.TestMethod("ToString()", () =>
+                {
+                    void ToStringTest(MutableJSONArray json, string expected)
+                    {
+                        runner.Test($"with {runner.ToString(json)}", (Test test) =>
+                        {
+                            test.AssertEqual(expected, json.ToString());
+                        });
+                    }
+
+                    ToStringTest(MutableJSONArray.Create(), "[]");
+                    ToStringTest(
+                        MutableJSONArray.Create(
+                            JSONNull.Create()),
+                        "[null]");
+                    ToStringTest(
+                        MutableJSONArray.Create(
+                            JSONNull.Create(),
+                            JSONBooleanValue.True),
+                        "[null,true]");
+                    ToStringTest(
+                        MutableJSONArray.Create(new[]
+                        {
+                            MutableJSONArray.Create(
+                                JSONNull.Create(),
+                                JSONBooleanValue.True)
+                        }),
+                        "[[null,true]]");
+                });
+
+                runner.TestMethod("Equals(object?)", () =>
+                {
+                    void EqualsTest(MutableJSONArray json, object? rhs, bool expected)
+                    {
+                        runner.Test($"with {Language.AndList(new object?[] { json, rhs }.Map(runner.ToString))}", (Test test) =>
+                        {
+                            test.AssertEqual(expected, json.Equals(rhs));
+                        });
+                    }
+
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        null,
+                        false);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        "abc",
+                        false);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        JSONBooleanValue.False,
+                        false);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create(),
+                        false);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create().Add(false),
+                        false);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        true);
+                    EqualsTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        Iterable.Create<JSONValue>(JSONBooleanValue.False, JSONStringValue.Create("hello")),
+                        true);
+                });
+
+                runner.TestMethod("GetHashCode()", () =>
+                {
+                    void GetHashCodeTest(MutableJSONArray json, object? rhs)
+                    {
+                        runner.Test($"with {Language.AndList(new object?[] { json, rhs }.Map(runner.ToString))}", (Test test) =>
+                        {
+                            test.AssertEqual(json.Equals(rhs), json.GetHashCode() == rhs?.GetHashCode());
+                        });
+                    }
+
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        null);
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        "abc");
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        JSONBooleanValue.False);
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create());
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create().Add(false));
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        MutableJSONArray.Create().Add(false).Add("hello"));
+                    GetHashCodeTest(
+                        MutableJSONArray.Create().Add(false).Add("hello"),
+                        Iterable.Create<JSONValue>(JSONBooleanValue.False, JSONStringValue.Create("hello")));
                 });
             });
         }

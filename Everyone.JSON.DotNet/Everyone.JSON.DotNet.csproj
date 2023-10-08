@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Everyone.Collections.DotNet" Version="1.0.0-dev009" />
+    <PackageReference Include="Everyone.Collections.DotNet" Version="1.0.0-dev010" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 

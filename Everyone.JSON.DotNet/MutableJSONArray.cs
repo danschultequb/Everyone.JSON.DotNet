@@ -22,36 +22,92 @@ namespace Everyone
             return new MutableJSONArray(elements);
         }
 
-        public virtual MutableJSONArray Add(bool value)
-        {
-            return this.Add(JSONBooleanValue.Create(value));
-        }
-
-        public virtual MutableJSONArray Add(string value)
-        {
-            return this.Add(JSONStringValue.Create(value));
-        }
-
         public override MutableJSONArray Set(int index, JSONValue value)
         {
             Pre.Condition.AssertNotNull(value, nameof(value));
 
             return base.Set(index, value);
         }
+    }
 
-        public virtual MutableJSONArray Set(int index, bool value)
+    /// <summary>
+    /// A collection of extension methods for <see cref="MutableJSONArray"/>s.
+    /// </summary>
+    public static class MutableJSONArrays
+    {
+        /// <summary>
+        /// Get the <see cref="MutableJSONObject"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="MutableJSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<MutableJSONObject> GetObject(this MutableJSONArray jsonArray, int index)
         {
-            return this.Set(index, JSONBooleanValue.Create(value));
+            return jsonArray.Get<MutableJSONObject>(index);
         }
 
-        public virtual MutableJSONArray Set(int index, string value)
+        /// <summary>
+        /// Get the <see cref="MutableJSONObject"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="MutableJSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<MutableJSONObject?> GetAsObject(this MutableJSONArray jsonArray, int index)
         {
-            return this.Set(index, JSONStringValue.Create(value));
+            return jsonArray.GetAs<MutableJSONObject>(index);
         }
 
-        public virtual MutableJSONArray SetNull(int index)
+        /// <summary>
+        /// Get the <see cref="JSONArray"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<MutableJSONArray> GetArray(this MutableJSONArray jsonArray, int index)
         {
-            return this.Set(index, JSONNull.Null);
+            return jsonArray.Get<MutableJSONArray>(index);
+        }
+
+        /// <summary>
+        /// Get the <see cref="JSONArray"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="MutableJSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<MutableJSONArray?> GetAsArray(this MutableJSONArray jsonArray, int index)
+        {
+            return jsonArray.GetAs<MutableJSONArray>(index);
+        }
+
+        public static MutableJSONArray Add(this MutableJSONArray jsonArray, bool value)
+        {
+            Pre.Condition.AssertNotNull(jsonArray, nameof(jsonArray));
+
+            return jsonArray.Add(JSONBooleanValue.Create(value));
+        }
+
+        public static MutableJSONArray Add(this MutableJSONArray jsonArray, string value)
+        {
+            Pre.Condition.AssertNotNull(jsonArray, nameof(jsonArray));
+
+            return jsonArray.Add(JSONStringValue.Create(value));
+        }
+
+        public static MutableJSONArray Set(this MutableJSONArray jsonArray, int index, bool value)
+        {
+            Pre.Condition.AssertNotNull(jsonArray, nameof(jsonArray));
+
+            return jsonArray.Set(index, JSONBooleanValue.Create(value));
+        }
+
+        public static MutableJSONArray Set(this MutableJSONArray jsonArray, int index, string value)
+        {
+            Pre.Condition.AssertNotNull(jsonArray, nameof(jsonArray));
+
+            return jsonArray.Set(index, JSONStringValue.Create(value));
+        }
+
+        public static MutableJSONArray SetNull(this MutableJSONArray jsonArray, int index)
+        {
+            Pre.Condition.AssertNotNull(jsonArray, nameof(jsonArray));
+
+            return jsonArray.Set(index, JSONNull.Create());
         }
     }
 }

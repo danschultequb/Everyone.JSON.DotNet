@@ -73,7 +73,57 @@
         /// <returns>This object for method chaining.</returns>
         public virtual MutableJSONObject SetNull(string propertyName)
         {
-            return this.Set(propertyName, JSONNull.Null);
+            return this.Set(propertyName, JSONNull.Create());
+        }
+    }
+
+    /// <summary>
+    /// A collection of extension methods for <see cref="MutableJSONObject"/>s.
+    /// </summary>
+    public static class MutableJSONObjects
+    {
+        /// <summary>
+        /// Get the <see cref="MutableJSONObject"/> value of the property with the provided name.
+        /// </summary>
+        /// <param name="jsonObject">The <see cref="MutableJSONObject"/> to get the property value from.</param>
+        /// <param name="propertyName">The name of the property to get the
+        /// <see cref="MutableJSONObject"/> value of.</param>
+        public static Result<MutableJSONObject> GetObject(this MutableJSONObject jsonObject, string propertyName)
+        {
+            return jsonObject.Get<MutableJSONObject>(propertyName);
+        }
+
+        /// <summary>
+        /// Get the <see cref="MutableJSONObject"/> value of the property with the provided name.
+        /// </summary>
+        /// <param name="jsonObject">The <see cref="MutableJSONObject"/> to get the property value from.</param>
+        /// <param name="propertyName">The name of the property to get the
+        /// <see cref="MutableJSONObject"/> value of.</param>
+        public static Result<MutableJSONObject?> GetAsObject(this MutableJSONObject jsonObject, string propertyName)
+        {
+            return jsonObject.GetAs<MutableJSONObject>(propertyName);
+        }
+
+        /// <summary>
+        /// Get the <see cref="MutableJSONArray"/> value of the property with the provided name.
+        /// </summary>
+        /// <param name="jsonObject">The <see cref="MutableJSONObject"/> to get the property value from.</param>
+        /// <param name="propertyName">The name of the property to get the
+        /// <see cref="MutableJSONArray"/> value of.</param>
+        public static Result<MutableJSONArray> GetArray(this MutableJSONObject jsonObject, string propertyName)
+        {
+            return jsonObject.Get<MutableJSONArray>(propertyName);
+        }
+
+        /// <summary>
+        /// Get the <see cref="MutableJSONArray"/> value of the property with the provided name.
+        /// </summary>
+        /// <param name="jsonObject">The <see cref="MutableJSONObject"/> to get the property value from.</param>
+        /// <param name="propertyName">The name of the property to get the
+        /// <see cref="MutableJSONArray"/> value of.</param>
+        public static Result<MutableJSONArray?> GetAsArray(this MutableJSONObject jsonObject, string propertyName)
+        {
+            return jsonObject.GetAs<MutableJSONArray>(propertyName);
         }
     }
 }

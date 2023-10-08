@@ -26,5 +26,21 @@
         {
             return this.value;
         }
+
+        public override string ToString()
+        {
+            return this.value.EscapeAndQuote(quote: '\"')!;
+        }
+
+        public override bool Equals(object? rhs)
+        {
+            return rhs is JSONStringValue rhsJson &&
+                this.value == rhsJson.value;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Get(this.GetType(), this.value);
+        }
     }
 }

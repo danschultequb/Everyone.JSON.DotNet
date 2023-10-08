@@ -80,11 +80,11 @@ namespace Everyone
                 {
                     runner.Test("with existing property name and matching property value type", (Test test) =>
                     {
-                        JSONObject propertyValue = JSONObject.Create();
+                        MutableJSONObject propertyValue = JSONObject.Create();
                         MutableJSONObject json = MutableJSONObject.Create()
                             .Set("found", propertyValue);
 
-                        Result<JSONObject> getResult = json.GetObject("found");
+                        Result<MutableJSONObject> getResult = json.GetObject("found");
                         test.AssertSame(propertyValue, getResult.Await());
                     });
 
@@ -94,9 +94,9 @@ namespace Everyone
                         MutableJSONObject json = MutableJSONObject.Create()
                             .Set("found", propertyValue);
 
-                        Result<JSONObject> getResult = json.GetObject("found");
+                        Result<MutableJSONObject> getResult = json.GetObject("found");
                         test.AssertThrows(() => getResult.Await(),
-                            new InvalidCastException($"Unable to cast object of type '{Types.GetFullName<JSONBooleanValue>()}' to type '{Types.GetFullName<JSONObject>()}'."));
+                            new InvalidCastException($"Unable to cast object of type '{Types.GetFullName<JSONBooleanValue>()}' to type '{Types.GetFullName<MutableJSONObject>()}'."));
                     });
                 });
 
@@ -104,11 +104,11 @@ namespace Everyone
                 {
                     runner.Test("with existing property name and matching property value type", (Test test) =>
                     {
-                        JSONObject propertyValue = JSONObject.Create();
+                        MutableJSONObject propertyValue = JSONObject.Create();
                         MutableJSONObject json = MutableJSONObject.Create()
                             .Set("found", propertyValue);
 
-                        Result<JSONObject?> getResult = json.GetAsObject("found");
+                        Result<MutableJSONObject?> getResult = json.GetAsObject("found");
                         test.AssertSame(propertyValue, getResult.Await());
                     });
 
@@ -118,7 +118,7 @@ namespace Everyone
                         MutableJSONObject json = MutableJSONObject.Create()
                             .Set("found", propertyValue);
 
-                        Result<JSONObject?> getResult = json.GetAsObject("found");
+                        Result<MutableJSONObject?> getResult = json.GetAsObject("found");
                         test.AssertNull(getResult.Await());
                     });
                 });
@@ -348,7 +348,7 @@ namespace Everyone
 
                         MutableJSONObject setResult = json.SetNull("a");
                         test.AssertSame(json, setResult);
-                        test.AssertEqual(JSONNull.Null, json.GetNull("a").Await());
+                        test.AssertEqual(JSONNull.Create(), json.GetNull("a").Await());
                     });
                 });
             });

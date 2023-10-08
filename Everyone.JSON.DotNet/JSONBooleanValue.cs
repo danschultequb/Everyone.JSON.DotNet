@@ -14,11 +14,11 @@
 
         public static JSONBooleanValue Create(bool value)
         {
-            return new JSONBooleanValue(value);
+            return value ? JSONBooleanValue.True : JSONBooleanValue.False;
         }
 
-        public static readonly JSONBooleanValue True = JSONBooleanValue.Create(true);
-        public static readonly JSONBooleanValue False = JSONBooleanValue.Create(false);
+        public static readonly JSONBooleanValue True = new JSONBooleanValue(true);
+        public static readonly JSONBooleanValue False = new JSONBooleanValue(false);
 
         /// <summary>
         /// Get the <see cref="bool"/> value of this <see cref="JSONBooleanValue"/>.
@@ -26,6 +26,22 @@
         public bool GetValue()
         {
             return this.value;
+        }
+
+        public override string ToString()
+        {
+            return this.value ? "true" : "false";
+        }
+
+        public override bool Equals(object? rhs)
+        {
+            return rhs is JSONBooleanValue rhsJson &&
+                this.value == rhsJson.value;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Get(this.GetType(), this.value);
         }
     }
 }

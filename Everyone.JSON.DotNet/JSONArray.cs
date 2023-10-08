@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Everyone
+﻿namespace Everyone
 {
     /// <summary>
     /// An array of <see cref="JSONValue"/>s.
     /// </summary>
-    public interface JSONArray : Indexable<JSONValue>
+    public interface JSONArray : Indexable<JSONValue>, JSONValue
     {
         public static MutableJSONArray Create(params JSONValue[] elements)
         {
@@ -72,7 +70,27 @@ namespace Everyone
         }
 
         /// <summary>
-        /// Get the <see cref="JSONBooleanValue"/> value at the provided <paramref name="index"/>.
+        /// Get the <see cref="JSONArray"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<JSONArray> GetArray(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.Get<JSONArray>(index);
+        }
+
+        /// <summary>
+        /// Get the <see cref="JSONArray"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<JSONArray?> GetAsArray(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.GetAs<JSONArray>(index);
+        }
+
+        /// <summary>
+        /// Get the <see cref="bool"/> value at the provided <paramref name="index"/>.
         /// </summary>
         /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
         /// <param name="index">The index of the value to get.</param>
@@ -83,7 +101,7 @@ namespace Everyone
         }
 
         /// <summary>
-        /// Get the <see cref="JSONBooleanValue"/> value at the provided <paramref name="index"/>.
+        /// Get the <see cref="bool"/> value at the provided <paramref name="index"/>.
         /// </summary>
         /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
         /// <param name="index">The index of the value to get.</param>
@@ -94,7 +112,7 @@ namespace Everyone
         }
 
         /// <summary>
-        /// Get the <see cref="JSONStringValue"/> value at the provided <paramref name="index"/>.
+        /// Get the <see cref="string"/> value at the provided <paramref name="index"/>.
         /// </summary>
         /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
         /// <param name="index">The index of the value to get.</param>
@@ -105,7 +123,7 @@ namespace Everyone
         }
 
         /// <summary>
-        /// Get the <see cref="JSONStringValue"/> value at the provided <paramref name="index"/>.
+        /// Get the <see cref="string"/> value at the provided <paramref name="index"/>.
         /// </summary>
         /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
         /// <param name="index">The index of the value to get.</param>
@@ -133,6 +151,50 @@ namespace Everyone
         public static Result<JSONNull?> GetAsNull(this JSONArray jsonArray, int index)
         {
             return jsonArray.GetAs<JSONNull>(index);
+        }
+
+        /// <summary>
+        /// Get the <see cref="long"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<long> GetLong(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.Get<JSONLongValue>(index)
+                .Then(json => json.GetValue());
+        }
+
+        /// <summary>
+        /// Get the <see cref="long"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<long?> GetAsLong(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.GetAs<JSONLongValue>(index)
+                .Then(json => json?.GetValue());
+        }
+
+        /// <summary>
+        /// Get the <see cref="double"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<double> GetDouble(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.Get<JSONDoubleValue>(index)
+                .Then(json => json.GetValue());
+        }
+
+        /// <summary>
+        /// Get the <see cref="double"/> value at the provided <paramref name="index"/>.
+        /// </summary>
+        /// <param name="jsonArray">The <see cref="JSONArray"/> to get the value from.</param>
+        /// <param name="index">The index of the value to get.</param>
+        public static Result<double?> GetAsDouble(this JSONArray jsonArray, int index)
+        {
+            return jsonArray.GetAs<JSONDoubleValue>(index)
+                .Then(json => json?.GetValue());
         }
     }
 }
